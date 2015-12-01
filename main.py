@@ -38,24 +38,28 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, template_values))
 
     def get_user_info(self):
+        my_id = '109483363884786481827' # user ID for anthony.fumagalli@knowlabs.com
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
             user_name = user.nickname()
+            user_id = user.user_id()
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login with Google'
             user_name = 'Anonymous'
-        return url, url_linktext, user_name
-
-class MainHandler(Handler):
-    def get(self):
-        url, url_linktext, user_name = self.get_user_info()
-        if user_name == 'anthony.fumagalli@knowlabs.com':
+            user_id = None
+        if user_name == "anthony.fumagalli@knowlabs.com":
+        #if user_id == my_id:
             admin = True
         else:
             admin = False
+        return url, url_linktext, user_name, admin
+
+class MainHandler(Handler):
+    def get(self):
+        url, url_linktext, user_name, admin = self.get_user_info()
         template_values = {
             'user_name': user_name,
             'url': url,

@@ -35,7 +35,21 @@
     </div>
     <a class ="login-link" href="{{ url|safe }}">{{ url_linktext }}</a>
     {% if admin %}
-        <h1>Yay! You're an admin!</h1>
+        <form action="/sign?" enctype="mulitpart/form-data" method="post">
+            <div class="photo-upload">
+                <label>Photo:</label> <br>
+                <input type="file" name="img">
+            </div>
+            <div class="photo-loc">
+                <label>Location:</label> <br>
+                <textarea name="content" rows="1" cols="60"></textarea>
+            </div>
+            <div class="photo-desc">
+                <label>Description:</label> <br>
+                <textarea name="content" rows="3" cols="60"></textarea>
+            </div>
+            <input type="submit" value="Submit Photo">
+        </form>
     {% endif %}
 
 </body>
