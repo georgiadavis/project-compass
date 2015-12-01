@@ -30,6 +30,14 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>
 
+    <div class="login">
+    Logged in as: <b>{{ user_name }}</b><br>
+    </div>
+    <a class ="login-link" href="{{ url|safe }}">{{ url_linktext }}</a>
+    {% if admin %}
+        <h1>Yay! You're an admin!</h1>
+    {% endif %}
+
 </body>
 
 </html>
