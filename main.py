@@ -16,7 +16,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(template_dir),
     extensions = ['jinja2.ext.autoescape'],
-    autoescape = True)
+    autoescape = False)
 
 DEFAULT_MAP_NAME = 'default'
 
@@ -106,13 +106,27 @@ class MainPage(Handler):
         photos = photos_query.fetch()
         photos_list = list(photos)
 
+        points = []
+        html = []
+        for photo in photos_list:
+            if photo.coords:
+                coords = [photo.coords.lat, photo.coords.lon]
+                points.append(coords)
+            img_html = "<img src='/img?img_id=%s'> <br>" % photo.key.urlsafe()
+            loc_html = "<b> %s </b> <br>" % photo.location
+            desc_html = "<p> %s </p>" % photo.description
+            all_html = img_html + loc_html + desc_html
+            html.append(str(all_html))
+
         template_values = {
             'map_name': map_name,
             'user_name': user_name,
             'url': url,
             'url_linktext': url_linktext,
             'admin': admin,
-            'photos': photos_list
+            'photos': photos_list,
+            'points': points,
+            'content': html
         }
         self.render('index.html', template_values)
 
@@ -126,9 +140,11 @@ class PhotoMap(Handler):
                 identity = user.user_id(),
                 name = user.nickname(),
                 email = user.email())
-        photo.image = self.request.get('img')
+        image = self.request.get('img')
+        image = images.resize(image, 100, 100)
+        photo.image = image
         loc = self.request.get('location')
-        photos.location = loc
+        photo.location = loc
         loc = loc.replace(" ", "+")
         photo.coords = get_coords(loc)
         photo.description = self.request.get('description')

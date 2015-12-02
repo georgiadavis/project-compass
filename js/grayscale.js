@@ -144,19 +144,19 @@ function init() {
 ]
     };
 
-    // Get the HTML DOM element that will contain your map
-    // We are using a div with id="map" seen below in the <body>
-    var mapElement = document.getElementById('map');
+    // // Get the HTML DOM element that will contain your map
+    // // We are using a div with id="map" seen below in the <body>
+    // var mapElement = document.getElementById('map');
 
-    // Create the Google Map using out element and options defined above
-    var map = new google.maps.Map(mapElement, mapOptions);
+    // // Create the Google Map using out element and options defined above
+    // var map = new google.maps.Map(mapElement, mapOptions);
 
-    // Custom Map Marker Icon - Customize the map-marker.png file to customize your icon
-    var image = 'img/map-pin-red.svg';
-    var myLatLng = new google.maps.LatLng(37.7739, -122.4312);
-    var beachMarker = new google.maps.Marker({
-        position: myLatLng,
-        map: map,
-        icon: image
-    });
+    // // Custom Map Marker Icon - Customize the map-marker.png file to customize your icon
+    // var image = 'img/map-pin-red.svg';
+    // var myLatLng = new google.maps.LatLng(37.7739, -122.4312);
+    // var beachMarker = new google.maps.Marker({
+    //     position: myLatLng,
+    //     map: map,
+    //     icon: image
+    // });
 }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -24,11 +25,38 @@
     <!-- Plugin JavaScript -->
     <script src="js/jquery.easing.min.js"></script>
 
-    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="js/grayscale.js"></script>
+    <script>
+        function initMap() {
+            var san_fran = {lat: 37.7739, lng: -122.4312};
+            var points = {{ points }};
+            var content = {{ content }};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 2,
+                center: san_fran
+            });
+
+            for (i = 0; i < content.length; i++) {
+                var point = points[i];
+                var coords = {lat: point[0], lng: point[1]};
+                var contentString = content[i];
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                var marker = new google.maps.Marker({
+                    position: coords,
+                    map: map,
+                    html: contentString
+                });
+                marker.addListener('click', function() {
+                    infowindow.setContent(this.html);
+                    infowindow.open(map, this);
+                });
+            }
+        }
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrBdkhBivFI73bM5S4VUg1JLnl4UQPu1g&signed_in=true&callback=initMap"></script>
 
     {% for photo in photos %}
         <div>
