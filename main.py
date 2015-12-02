@@ -2,9 +2,12 @@
 
 import os
 import cgi
+import json
 import urllib
+import urllib2
 import webapp2
 import jinja2
+from xml.dom import minidom
 from google.appengine.api import images
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -21,6 +24,23 @@ def map_key(map_name=DEFAULT_MAP_NAME):
     """Constructs Datastore key for PhotoMap entity."""
     return ndb.Key('PhotoMap', map_name)
 
+def get_coords(address):
+    url = "https://maps.googleapis.com/maps/api/geocode/xml?address=%s" % address
+    try:
+        response = urllib2.urlopen(url)
+        xmlgeocode = response.read()
+    except urllib2.URLError:
+        return
+    if xmlgeocode:
+        d = minidom.parseString(xmlgeocode)
+        coords = d.getElementsByTagName("status")[0].childNodes[0].nodeValue
+        if coords == "OK":
+            lat = d.getElementsByTagName("lat")[0].childNodes[0].nodeValue
+            lng = d.getElementsByTagName("lng")[0].childNodes[0].nodeValue
+            return ndb.GeoPt(lat, lng)
+        return
+    return
+
 class Author(ndb.Model):
     """Sub model for representing an author."""
     identity = ndb.StringProperty(indexed = True)
@@ -32,6 +52,7 @@ class Photo(ndb.Model):
     author = ndb.StructuredProperty(Author)
     image = ndb.BlobProperty()
     location = ndb.StringProperty()
+    coords = ndb.GeoPtProperty()
     description = ndb.StringProperty()
     date = ndb.DateTimeProperty(auto_now_add = True)
 
@@ -83,13 +104,15 @@ class MainPage(Handler):
         photos_query = Photo.query(
             ancestor = map_key(map_name)).order(-Photo.date)
         photos = photos_query.fetch()
+        photos_list = list(photos)
 
         template_values = {
             'map_name': map_name,
             'user_name': user_name,
             'url': url,
             'url_linktext': url_linktext,
-            'admin': admin
+            'admin': admin,
+            'photos': photos_list
         }
         self.render('index.html', template_values)
 
@@ -104,7 +127,10 @@ class PhotoMap(Handler):
                 name = user.nickname(),
                 email = user.email())
         photo.image = self.request.get('img')
-        photo.location = self.request.get('location')
+        loc = self.request.get('location')
+        photos.location = loc
+        loc = loc.replace(" ", "+")
+        photo.coords = get_coords(loc)
         photo.description = self.request.get('description')
         photo.put()
         self.redirect('/?' + urllib.urlencode(

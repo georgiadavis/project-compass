@@ -30,6 +30,18 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>
 
+    {% for photo in photos %}
+        <div>
+            <img src="/img?img_id={{ photo.key.urlsafe() }}">
+        </div>
+        <div>
+            <b>{{ photo.location }}</b>
+        </div>
+        <div>
+            <em>{{ photo.description }}</em>
+        </div>
+    {% endfor %}
+
     <div class="login">
     Logged in as: <b>{{ user_name }}</b><br>
     </div>
