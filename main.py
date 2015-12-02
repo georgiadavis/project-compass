@@ -80,8 +80,8 @@ class Handler(webapp2.RequestHandler):
             url_linktext = 'Login with Google'
             user_name = 'Anonymous'
             user_id = None
-        if user_name == "anthony.fumagalli@knowlabs.com":
-        #if user_id == my_id:
+        # if user_name == "anthony.fumagalli@knowlabs.com":
+        if user_id == my_id:
             admin = True
         else:
             admin = False
@@ -114,7 +114,7 @@ class MainPage(Handler):
                 points.append(coords)
             img_html = "<img src='/img?img_id=%s'> <br>" % photo.key.urlsafe()
             loc_html = "<b> %s </b> <br>" % photo.location
-            desc_html = "<p> %s </p>" % photo.description
+            desc_html = "<em> %s </em>" % photo.description
             all_html = img_html + loc_html + desc_html
             html.append(str(all_html))
 
@@ -141,7 +141,7 @@ class PhotoMap(Handler):
                 name = user.nickname(),
                 email = user.email())
         image = self.request.get('img')
-        image = images.resize(image, 100, 100)
+        image = images.resize(image, 150, 150)
         photo.image = image
         loc = self.request.get('location')
         photo.location = loc

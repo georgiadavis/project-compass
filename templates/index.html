@@ -8,14 +8,10 @@
 <body>
     <!--Title-->
     <h1 class="title"> Project <img class="compass_icon"src="img/compass102.svg"> Compass</h1>
+    <!-- Welcome Message -->
+    <div class="welcome">Welcome to Project Compass! Use the map below to explore my travels, or check out the archive at the bottom of the page.</div>
     <!-- Map Section -->
     <div id="map"></div>
-    <!-- Footer -->
-    <footer>
-        <div class="footer">
-            <p>Copyright &copy; Project Compass</p>
-        </div>
-    </footer>
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
@@ -28,12 +24,12 @@
 
     <script>
         function initMap() {
-            var san_fran = {lat: 37.7739, lng: -122.4312};
+            var center = {lat: 30.751278, lng: -33.398437};
             var points = {{ points }};
             var content = {{ content }};
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 2,
-                center: san_fran
+                zoom: 1,
+                center: center
             });
 
             for (i = 0; i < content.length; i++) {
@@ -58,6 +54,7 @@
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrBdkhBivFI73bM5S4VUg1JLnl4UQPu1g&signed_in=true&callback=initMap"></script>
 
+    <h1>All Photos</h1>
     {% for photo in photos %}
         <div>
             <img src="/img?img_id={{ photo.key.urlsafe() }}">
@@ -68,14 +65,11 @@
         <div>
             <em>{{ photo.description }}</em>
         </div>
+        <br>
     {% endfor %}
 
-    <div class="login">
-    Logged in as: <b>{{ user_name }}</b><br>
-    </div>
-    <a class ="login-link" href="{{ url|safe }}">{{ url_linktext }}</a>
     {% if admin %}
-        <form action="/post?{{ map_name }}" enctype="multipart/form-data" method="post">
+        <form class="admin-tools" action="/post?{{ map_name }}" enctype="multipart/form-data" method="post">
             <div class="photo-upload">
                 <label>Photo:</label> <br>
                 <input type="file" name="img"/>
@@ -91,6 +85,17 @@
             <input type="submit" value="Submit Photo">
         </form>
     {% endif %}
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer">
+            <div class="login">
+                Logged in as: <b>{{ user_name }}</b><br>
+            </div>
+            <a class ="login-link" href="{{ url|safe }}">{{ url_linktext }}</a>
+            <div>Copyright &copy; Project Compass</div>
+        </div>
+    </footer>
 
 </body>
 
